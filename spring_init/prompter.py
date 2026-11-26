@@ -21,9 +21,8 @@ class Prompter:
         return self._fzf.menu(label, rows, messages.MENU_HEADER)
 
     def text(self, label: str, default: str) -> str:
-        """Free text; empty keeps the default shown in brackets."""
-        template = messages.TEXT_PROMPT if default else messages.TEXT_PROMPT_EMPTY
-        value = self._ask(template.format(label=label, default=default)).strip()
+        """Free text, pre-filled with the default; clearing it also keeps the default."""
+        value = self._ask(messages.TEXT_PROMPT.format(label=label), default).strip()
         return value or default
 
     def dependencies(self, available: list[Dependency], chosen: list[str]) -> list[str]:
@@ -46,9 +45,9 @@ class Prompter:
         answer = self._ask(messages.CONFIRM_GENERATE).strip().lower()
         return answer in messages.CONFIRM_YES
 
-    def _ask(self, prompt: str) -> str:
+    def _ask(self, prompt: str, prefill: str = "") -> str:
         try:
-            answer = self._read_line(prompt)
+            answer = self._read_line(prompt, prefill)
         except (EOFError, KeyboardInterrupt) as exc:
             raise AbortedError(messages.ABORTED) from exc
         if answer.strip() == config.BACK_KEY:

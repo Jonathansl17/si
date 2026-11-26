@@ -1,4 +1,6 @@
-"""Walks the user through every Initializr option, in the web UI's order.
+"""Walks the user through the start.spring.io form, field by field, in its order.
+
+Name and Description are not on the form either; they stay flag-only.
 
 Each prompt may raise GoBack; the wizard then re-asks the previous prompt.
 """
@@ -27,8 +29,6 @@ STEPS = (
     Step("boot_version", messages.LABEL_BOOT, SELECT),
     Step("group_id", messages.LABEL_GROUP, TEXT),
     Step("artifact_id", messages.LABEL_ARTIFACT, TEXT),
-    Step("name", messages.LABEL_NAME, TEXT),
-    Step("description", messages.LABEL_DESCRIPTION, TEXT),
     Step("package_name", messages.LABEL_PACKAGE, TEXT),
     Step("packaging", messages.LABEL_PACKAGING, SELECT),
     Step("configuration_file_format", messages.LABEL_CONFIG, SELECT),

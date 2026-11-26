@@ -19,7 +19,7 @@ class FakeFzf:
 def reader(*answers):
     queue = list(answers)
 
-    def read_line(prompt):
+    def read_line(prompt, prefill=""):
         answer = queue.pop(0)
         if isinstance(answer, BaseException):
             raise answer
@@ -32,6 +32,15 @@ def dep(dep_id):
 
 
 class TextTest(unittest.TestCase):
+    def test_default_is_prefilled_for_editing(self):
+        seen = []
+
+        def read_line(prompt, prefill=""):
+            seen.append(prefill)
+            return prefill.replace("example", "acme")
+        self.assertEqual(Prompter(None, read_line).text("Group", "com.example"), "com.acme")
+        self.assertEqual(seen, ["com.example"])
+
     def test_empty_answer_keeps_default(self):
         self.assertEqual(Prompter(None, reader("")).text("Group", "com.example"), "com.example")
 

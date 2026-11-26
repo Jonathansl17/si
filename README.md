@@ -23,10 +23,11 @@ si                 # interactive: creates ./<artifact>
 si --here          # interactive: generates into the current directory
 ```
 
-It walks through Project, Language, Spring Boot, Group, Artifact, Name,
-Description, Package name, Packaging, Configuration, Java and Dependencies,
-then shows a summary to confirm. Every prompt starts on the web form's
-default, so ENTER keeps it.
+It asks exactly what the start.spring.io form shows: Project, Language,
+Spring Boot, Group, Artifact, Package name, Packaging, Configuration, Java and
+Dependencies, then shows a summary to confirm. Every prompt starts on the
+form's default: menus highlight it and text fields come pre-filled, ready to
+edit. Name and Description are not on the form, so they are flag-only.
 
 Dependencies are a fuzzy search: type `jpa`, press TAB to add it, type
 `postgres`, TAB, and ENTER when done. Only dependencies compatible with the
@@ -35,7 +36,7 @@ description.
 
 | Key | Action |
 | --- | --- |
-| `q` | Back to the previous question (in Dependencies, only while the search is empty; marked dependencies are kept) |
+| `q` | Back to the previous question. In text fields, clear the value and enter `q`; in Dependencies, only while the search is empty (marked dependencies are kept) |
 | `↑` `↓` / `j` `k` | Move through options |
 | `ENTER` | Select / keep the default |
 | `TAB` | Add or remove a dependency |
