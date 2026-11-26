@@ -1,11 +1,7 @@
-"""input() with an editable pre-filled default, like a web form field."""
+"""input() with readline line editing (arrows, history, Ctrl-A/E)."""
 
-import readline
+import readline  # noqa: F401  importing it is what enables line editing in input()
 
 
-def read_line(prompt: str, default: str) -> str:
-    readline.set_startup_hook(lambda: readline.insert_text(default))
-    try:
-        return input(prompt)
-    finally:
-        readline.set_startup_hook()
+def read_line(prompt: str) -> str:
+    return input(prompt)

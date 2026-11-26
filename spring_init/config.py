@@ -19,6 +19,10 @@ FZF_EXIT_ABORTED = 130
 FZF_HEIGHT = "60%"
 FZF_FIELD_SEPARATOR = "\t"
 FZF_TABSTOP = "2"
+FZF_SHELL = "sh -c"
+
+BACK_KEY = "q"
+BACK_SENTINEL = "<si:back>"
 
 FORMAT_TAG = "format"
 FORMAT_PROJECT = "project"

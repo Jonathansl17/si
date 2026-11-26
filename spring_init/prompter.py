@@ -1,12 +1,11 @@
-"""Interactive prompts: fzf for choices, readline for editable text."""
+"""Interactive prompts. Every prompt accepts 'q' to return to the previous one."""
 
-from . import messages
-from .errors import AbortedError
+from . import config, messages
+from .errors import AbortedError, GoBack
 from .fzf import Fzf, Row
 from .metadata import Dependency, SelectField
 
 NONE_KEY = "-"
-TEXT_PROMPT = "{label}: "
 
 
 class Prompter:
@@ -19,14 +18,13 @@ class Prompter:
         ordered = sorted(field.choices, key=lambda c: c.id != current)
         rows = [Row(c.id, (c.name, messages.DEFAULT_MARK if c.id == current else ""))
                 for c in ordered]
-        return self._fzf.pick(label, rows)[0]
+        return self._fzf.menu(label, rows, messages.MENU_HEADER)
 
     def text(self, label: str, default: str) -> str:
-        try:
-            value = self._read_line(TEXT_PROMPT.format(label=label), default)
-        except (EOFError, KeyboardInterrupt) as exc:
-            raise AbortedError(messages.ABORTED) from exc
-        return value.strip() or default
+        """Free text; empty keeps the default shown in brackets."""
+        template = messages.TEXT_PROMPT if default else messages.TEXT_PROMPT_EMPTY
+        value = self._ask(template.format(label=label, default=default)).strip()
+        return value or default
 
     def dependencies(self, available: list[Dependency], chosen: list[str]) -> list[str]:
         """Fuzzy multi-select. Already chosen ids are listed first."""
@@ -35,14 +33,28 @@ class Prompter:
         rows = [Row(NONE_KEY, (" " * width, messages.DEPS_NONE, ""), "")]
         rows += [Row(d.id, (d.id.ljust(width), d.name, f"[{d.group}]"), d.description)
                  for d in ordered]
-        picked = self._fzf.pick(messages.LABEL_DEPENDENCIES, rows, multi=True,
-                                header=messages.DEPS_HEADER)
-        return [key for key in picked if key != NONE_KEY]
+        marked = tuple(i for i, row in enumerate(rows) if row.key in chosen)
+        try:
+            picked = self._fzf.search(messages.LABEL_DEPENDENCIES, rows, messages.DEPS_HEADER,
+                                      marked)
+        except GoBack as back:
+            raise GoBack(_real(back.kept or [])) from back
+        return _real(picked)
 
     def confirm(self, summary: str) -> bool:
         print(summary)
+        answer = self._ask(messages.CONFIRM_GENERATE).strip().lower()
+        return answer in messages.CONFIRM_YES
+
+    def _ask(self, prompt: str) -> str:
         try:
-            answer = input(messages.CONFIRM_GENERATE)
+            answer = self._read_line(prompt)
         except (EOFError, KeyboardInterrupt) as exc:
             raise AbortedError(messages.ABORTED) from exc
-        return answer.strip().lower() in messages.CONFIRM_YES
+        if answer.strip() == config.BACK_KEY:
+            raise GoBack()
+        return answer
+
+
+def _real(keys: list[str]) -> list[str]:
+    return [key for key in keys if key != NONE_KEY]

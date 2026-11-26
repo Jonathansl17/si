@@ -1,6 +1,7 @@
 """Entry point: wires concrete collaborators and maps errors to exit codes."""
 
 import sys
+from functools import partial
 from pathlib import Path
 
 from . import arguments, config, messages, summary
@@ -44,10 +45,8 @@ def _run(namespace) -> int:
         return EXIT_OK
     if not namespace.yes:
         prompter = Prompter(Fzf(), read_line)
-        Wizard(prompter, metadata).run(request, fixed=set(overrides))
-        validate(request, metadata)
-        if not prompter.confirm(summary.render(request, metadata)):
-            raise AbortedError(messages.ABORTED)
+        render = partial(summary.render, metadata=metadata)
+        Wizard(prompter, metadata, render).run(request, fixed=set(overrides))
     validate(request, metadata)
     print(messages.DOWNLOADING, file=sys.stderr)
     created = Generator(client, metadata).generate(request, Path.cwd(), namespace.here)

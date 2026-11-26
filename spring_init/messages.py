@@ -13,11 +13,14 @@ LABEL_CONFIG = "Configuration"
 LABEL_JAVA = "Java"
 LABEL_DEPENDENCIES = "Dependencies"
 
-DEPS_HEADER = "Type to search  TAB: add/remove  ENTER: done  ESC: cancel"
+DEPS_HEADER = "Type to search  TAB: add/remove  ENTER: done  q (empty search): back  ESC: cancel"
+MENU_HEADER = "Arrows or j/k: move  ENTER: select  q: back  ESC: cancel"
+TEXT_PROMPT = "{label} [{default}] (q: back): "
+TEXT_PROMPT_EMPTY = "{label} (q: back): "
 DEPS_NONE = "(none)"
 DEFAULT_MARK = "(default)"
 SUMMARY_TITLE = "Summary"
-CONFIRM_GENERATE = "Generate project? [Y/n] "
+CONFIRM_GENERATE = "Generate project? [Y/n, q: back] "
 CONFIRM_YES = ("", "y", "yes")
 
 ABORTED = "Aborted."

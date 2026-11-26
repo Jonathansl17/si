@@ -14,7 +14,7 @@ curl -fsSL https://raw.githubusercontent.com/Jonathansl17/si/main/install.sh | s
 ```
 
 Requires `python3` (3.10+) and [`fzf`](https://github.com/junegunn/fzf) for
-interactive mode. Running the installer again updates to the latest version.
+interactive mode (0.53 or newer). Running the installer again updates to the latest version.
 
 ## Usage
 
@@ -24,13 +24,22 @@ si --here          # interactive: generates into the current directory
 ```
 
 It walks through Project, Language, Spring Boot, Group, Artifact, Name,
-Description, Package name, Packaging, Configuration, Java and Dependencies.
-Every prompt starts on the web form's default, so ENTER keeps it.
+Description, Package name, Packaging, Configuration, Java and Dependencies,
+then shows a summary to confirm. Every prompt starts on the web form's
+default, so ENTER keeps it.
 
 Dependencies are a fuzzy search: type `jpa`, press TAB to add it, type
 `postgres`, TAB, and ENTER when done. Only dependencies compatible with the
 chosen Spring Boot version are listed, and the bottom pane shows each one's
 description.
+
+| Key | Action |
+| --- | --- |
+| `q` | Back to the previous question (in Dependencies, only while the search is empty; marked dependencies are kept) |
+| `↑` `↓` / `j` `k` | Move through options |
+| `ENTER` | Select / keep the default |
+| `TAB` | Add or remove a dependency |
+| `ESC` / `Ctrl-C` | Cancel |
 
 ### Non-interactive
 
